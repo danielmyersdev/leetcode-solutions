@@ -7,6 +7,7 @@
 // @lc code=start
 
 #include <algorithm>
+#include <unordered_set>
 #include <vector>
 
 using namespace std;
@@ -60,14 +61,17 @@ class Solution
 public:
     int reachableNodes(int n, vector<vector<int>> &edges, vector<int> &restricted)
     {
-        sort(restricted.begin(), restricted.end());
+        unordered_set<int> restricted_set;
+        for (auto it = restricted.begin(); it != restricted.end(); ++it) {
+            restricted_set.insert(*it);
+        }
         UnionFind uf(n);
         for (auto it = edges.begin(); it != edges.end(); ++it)
         {
             vector<int> &edge = *it;
             int a = edge[0];
             int b = edge[1];
-            if (!binary_search(restricted.begin(), restricted.end(), a) && !binary_search(restricted.begin(), restricted.end(), b))
+            if (restricted_set.count(a) == 0 && restricted_set.count(b) == 0)
             {
                 uf.unite(a, b);
             }

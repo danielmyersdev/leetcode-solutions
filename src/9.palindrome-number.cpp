@@ -17,17 +17,18 @@ public:
             return true;
         }
         
-        // Construct palindrome string
-        std::vector<int> xVec;
+        // x < 2^31 - 1.
+        char xVec[10];
+        size_t lastDigit = 0;
         while (x != 0) {
-            xVec.push_back(x % 10);
+            xVec[lastDigit] = x % 10;
             x /= 10;
+            ++lastDigit;
         }
 
         // Check palindrome
-        size_t numDigits = xVec.size();
-        for (size_t i = 0; i < numDigits / 2; ++i) {
-            if (xVec[i] != xVec[numDigits-1-i]) return false;
+        for (size_t i = 0; i < lastDigit / 2; ++i) {
+            if (xVec[i] != xVec[lastDigit-1-i]) return false;
         }
         return true;
     }

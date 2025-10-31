@@ -19,7 +19,10 @@ public:
         
         // x < 2^31 - 1.
         char xVec[10];
-        size_t lastDigit = 0;
+        xVec[0] = x % 10;
+        if (x == 0) return false;
+        x /= 10;
+        size_t lastDigit = 1;
         while (x != 0) {
             xVec[lastDigit] = x % 10;
             x /= 10;

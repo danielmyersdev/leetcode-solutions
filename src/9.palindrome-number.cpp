@@ -13,27 +13,15 @@ public:
         if (x < 0) {
             return false;
         }
-        if (x < 10) {
-            return true;
-        }
-        
-        // x < 2^31 - 1.
-        char xVec[10];
-        xVec[0] = x % 10;
-        if (x == 0) return false;
-        x /= 10;
-        size_t lastDigit = 1;
+
+        long original = x;
+        long reverse = 0;
         while (x != 0) {
-            xVec[lastDigit] = x % 10;
+            reverse = (reverse * 10) + (x % 10);
             x /= 10;
-            ++lastDigit;
         }
 
-        // Check palindrome
-        for (size_t i = 0; i < lastDigit / 2; ++i) {
-            if (xVec[i] != xVec[lastDigit-1-i]) return false;
-        }
-        return true;
+        return original == reverse;
     }
 };
 // @lc code=end

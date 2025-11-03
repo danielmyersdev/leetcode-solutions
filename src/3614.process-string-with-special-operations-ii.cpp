@@ -6,6 +6,8 @@
 
 // @lc code=start
 #include <string>
+#include <stdexcept>
+#include <vector>
 
 using namespace std;
 
@@ -17,38 +19,64 @@ public:
         constexpr char outOfBoundsChar = '.';
         if (k < 0)
             return outOfBoundsChar;
-        string result = "";
+        // Find the size of the string
+        long long processedStrSize = 0;
         for (auto it = s.begin(); it != s.end(); ++it)
         {
             if (isLowercase(*it))
             {
-                result.push_back(*it);
+                ++processedStrSize;
             }
             else if (*it == '*')
             {
-                if (!result.empty())
-                {
-                    result.pop_back();
+                if (processedStrSize > 0) {
+                    --processedStrSize;
                 }
             }
             else if (*it == '#')
             {
-                result.append(result);
+                processedStrSize *= 2;
             }
-            else
-            {
-                // assert *it == '%'
-                reverse(result);
-            }
+            // do nothing if *it == '%'
         }
-        if (k < result.size())
-        {
-            return result[k];
-        }
-        else
+
+        // Get original char by reversing instructions
+        if (k >= processedStrSize)
         {
             return outOfBoundsChar;
         }
+
+        size_t currStringSize = processedStrSize;
+        for (auto it = s.end(); it != s.begin(); --it)
+        {
+            char instruction = *(it - 1);
+            if (isLowercase(instruction))
+            {
+                --currStringSize;
+                if (currStringSize == k)
+                {
+                    return instruction;
+                }
+            }
+            else if (instruction == '*')
+            {
+                ++currStringSize;
+            }
+            else if (instruction == '#')
+            {
+                currStringSize /= 2;
+                if (k >= currStringSize)
+                {
+                    k -= currStringSize;
+                }
+            }
+            else if (instruction == '%')
+            {
+                k = currStringSize - 1 - k;
+            }
+        }
+
+        throw runtime_error("This shouldn't ever throw.");
     }
 
 private:
@@ -56,17 +84,6 @@ private:
     {
         int cInt = static_cast<int>(c);
         return static_cast<int>('a') <= cInt && cInt <= static_cast<int>('z');
-    }
-
-    static void reverse(string &str)
-    {
-        const size_t strLength = str.length();
-        for (size_t i = 0; i < strLength / 2; ++i)
-        {
-            char temp = str[i];
-            str[i] = str[strLength - 1 - i];
-            str[strLength - 1 - i] = temp;
-        }
     }
 };
 // @lc code=end

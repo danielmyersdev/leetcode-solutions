@@ -5,7 +5,7 @@
  */
 
 // @lc code=start
-#include <functional>
+#include <algorithm>
 #include <queue>
 #include <vector>
 
@@ -15,7 +15,7 @@ public:
     int eliminateMaximum(std::vector<int> &dist, std::vector<int> &speed)
     {
         int numMonsters = dist.size();
-        std::priority_queue<int, std::vector<int>, std::greater<int>> latestSuccessfulAttackTimes;
+        std::vector<int> latestSuccessfulAttackTimes;
 
         // Calculate attack times
         for (size_t i = 0; i < numMonsters; ++i)
@@ -24,18 +24,18 @@ public:
             bool isExactDivision = dist[i] % speed[i] == 0;
             if (isExactDivision)
                 --latestSuccessfulAttackTime;
-            latestSuccessfulAttackTimes.emplace(latestSuccessfulAttackTime);
+            latestSuccessfulAttackTimes.push_back(latestSuccessfulAttackTime);
         }
+        std::sort(latestSuccessfulAttackTimes.begin(), latestSuccessfulAttackTimes.end());
 
         // Simulate game
         for (int currTime = 0; currTime < numMonsters; ++currTime)
         {
-            int requiredAttackTime = latestSuccessfulAttackTimes.top();
+            int requiredAttackTime = latestSuccessfulAttackTimes[currTime];
             if (currTime > requiredAttackTime) 
             {
                 return currTime;
             }
-            latestSuccessfulAttackTimes.pop();
         }
 
         return numMonsters;
